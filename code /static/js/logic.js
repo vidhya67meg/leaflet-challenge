@@ -10,9 +10,9 @@ d3.json(queryUrl).then(function (data) {
 function createFeatures(earthquakeData) {
 
     // Define a function that we want to run once for each feature in the features array.
-    // Give each feature a popup that describes the place and time of the earthquake.
+    // Give each feature a popup that describes the place, depth and magnitude of the earthquake.
     function onEachFeature(feature, layer) {
-        layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`);
+        layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>Magnitude ${(feature.properties.mag)}</p><hr><p>Depth ${(feature.geometry.coordinates[2])}</p>`);
     }
 
     // Define a markerSize() function that will give each earthquake radius based on magnitude
@@ -50,7 +50,7 @@ function createFeatures(earthquakeData) {
         color: "white",
         fillColor: getMarkerColor(feature.geometry.coordinates[2]),
         // Setting our circle's radius to equal the output of our markerSize() function:
-        // This will make our marker's size proportionate to its population.
+        // This will make our marker's size proportionate to its magnitude.
         radius: markerSize(feature.properties.mag)
       })
     }
@@ -96,7 +96,7 @@ let baseMaps = {
     zoom: 2,
     layers: [street, earthquakes]
   });
-
+// Adding legend to map
   let legend = L.control({ position: 'bottomright' });
   legend.onAdd = function (map) {
     let div = L.DomUtil.create('div', 'info legend');
@@ -123,11 +123,7 @@ let baseMaps = {
 }
  legend.addTo(myMap);
 }
-
-
-  // Create a layer control.
-  // Pass it our baseMaps and overlayMaps.
-  // Add the layer control to the map.
+// Add the layer control to the map.
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: true
   }).addTo(myMap);
